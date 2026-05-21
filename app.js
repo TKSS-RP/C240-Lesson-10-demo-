@@ -4,6 +4,7 @@ const BREAK_SECONDS = 5 * 60;
 
 const state = {
   currentMode: 'work',
+  phase: 'work',
   secondsRemaining: WORK_SECONDS,
   timerId: null,
   isRunning: false,
@@ -14,7 +15,7 @@ const dom = {};
 
 function initApp() {
   cacheDom();
-  bindEvents();
+  bindEventListeners();
   state.sessionCount = loadSessionCount();
   updateSessionCounter();
   updateDisplay(state.secondsRemaining);
@@ -24,6 +25,7 @@ function cacheDom() {
   dom.modeLabel = document.getElementById('mode-label');
   dom.timerDisplay = document.getElementById('timer-display');
   dom.progressRing = document.getElementById('progress-ring');
+  dom.phaseLabel = document.getElementById('phase-label');
   dom.sessionCount = document.getElementById('session-count');
   dom.startButton = document.getElementById('start-button');
   dom.pauseButton = document.getElementById('pause-button');
@@ -31,7 +33,7 @@ function cacheDom() {
   dom.resetButton = document.getElementById('reset-button');
 }
 
-function bindEvents() {
+function bindEventListeners() {
   dom.startButton.addEventListener('click', startTimer);
   dom.pauseButton.addEventListener('click', pauseTimer);
   dom.resumeButton.addEventListener('click', resumeTimer);
@@ -55,8 +57,10 @@ function incrementSessionCount() {
 
 function setMode(mode) {
   state.currentMode = mode;
+  state.phase = mode;
   state.secondsRemaining = getTotalSecondsForMode(mode);
   dom.modeLabel.textContent = mode === 'work' ? 'Work' : 'Break';
+  if (dom.phaseLabel) dom.phaseLabel.textContent = mode === 'work' ? 'Work' : 'Break';
   updateDisplay(state.secondsRemaining);
 }
 
@@ -70,31 +74,52 @@ function startTimer() {
 }
 
 function pauseTimer() {
-  // Pause logic will be implemented later.
+  if (state.timerId !== null) {
+    window.clearInterval(state.timerId);
+    state.timerId = null;
+  }
+
+  state.isRunning = false;
 }
 
 function resumeTimer() {
-  // Resume logic will be implemented later.
+  if (state.isRunning || state.timerId !== null) {
+    return;
+  }
+
+  state.isRunning = true;
+  state.timerId = window.setInterval(timerTick, 1000);
 }
 
 function resetTimer() {
-  // Reset logic will be implemented later.
+  if (state.timerId !== null) {
+    window.clearInterval(state.timerId);
+    state.timerId = null;
+  }
+
+  state.isRunning = false;
+  state.phase = 'work';
+  state.currentMode = 'work';
+  state.secondsRemaining = WORK_SECONDS;
+  if (dom.phaseLabel) dom.phaseLabel.textContent = 'Work';
+  dom.modeLabel.textContent = 'Work';
+  updateDisplay(state.secondsRemaining);
 }
 
 function timerTick() {
-  if (state.secondsRemaining <= 0) {
-    return;
+  // If we are exactly at 00:00, switch phase and load the next duration
+  if (state.secondsRemaining === 0) {
+    state.phase = state.phase === 'work' ? 'break' : 'work';
+    state.currentMode = state.phase;
+    state.secondsRemaining = getTotalSecondsForMode(state.phase);
+    if (dom.phaseLabel) dom.phaseLabel.textContent = state.phase === 'work' ? 'Work' : 'Break';
+    dom.modeLabel.textContent = state.phase === 'work' ? 'Work' : 'Break';
+    updateDisplay(state.secondsRemaining);
+    return; // keep interval running; next tick will decrement the new duration
   }
 
   state.secondsRemaining -= 1;
   updateDisplay(state.secondsRemaining);
-
-  if (state.secondsRemaining === 0) {
-    window.clearInterval(state.timerId);
-    state.timerId = null;
-    state.isRunning = false;
-    console.log('work complete');
-  }
 }
 
 function updateDisplay(secondsRemaining) {
