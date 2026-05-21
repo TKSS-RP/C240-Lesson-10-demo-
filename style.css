@@ -1,0 +1,149 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f5f6fb;
+  color: #252a34;
+  --work-color: #f75a68;
+  --break-color: #4a90e2;
+  --surface-color: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: radial-gradient(circle at top, rgba(74, 144, 226, 0.15), transparent 40%), #f5f6fb;
+}
+
+.app-shell {
+  width: min(100%, 420px);
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.app-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 4vw, 2.5rem);
+}
+
+.session-counter {
+  margin: 0;
+  color: #5c6577;
+  font-size: 0.95rem;
+}
+
+.timer-card {
+  background: var(--surface-color);
+  border-radius: 32px;
+  padding: 1.75rem 1.5rem 2rem;
+  box-shadow: 0 24px 60px rgba(37, 42, 52, 0.12);
+}
+
+.mode-label {
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--work-color);
+  margin-bottom: 1.25rem;
+}
+
+.timer-ring {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  margin: 0 auto 1.75rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #ffffff 60%, #f1f4fb 100%);
+  display: grid;
+  place-items: center;
+}
+
+.progress-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 1.2rem;
+  background: conic-gradient(var(--work-color) 0%, #e6e9f7 0%);
+}
+
+.timer-face {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(37, 42, 52, 0.04), inset 0 18px 40px rgba(74, 144, 226, 0.06);
+  display: grid;
+  place-items: center;
+  font-size: clamp(2.75rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #252a34;
+}
+
+.controls {
+  display: grid;
+  gap: 0.9rem;
+}
+
+button {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 0.95rem 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+#start-button {
+  background: linear-gradient(135deg, var(--work-color), #fb7d7b);
+  color: white;
+}
+
+#pause-button {
+  background: #4a90e2;
+  color: white;
+}
+
+#resume-button {
+  background: #2dce89;
+  color: white;
+}
+
+#reset-button {
+  background: #f1f3f8;
+  color: #252a34;
+}
+
+@media (max-width: 360px) {
+  .timer-ring {
+    width: 280px;
+    height: 280px;
+  }
+
+  .timer-face {
+    width: 190px;
+    height: 190px;
+  }
+}
