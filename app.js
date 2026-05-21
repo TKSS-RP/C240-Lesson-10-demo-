@@ -61,7 +61,12 @@ function setMode(mode) {
 }
 
 function startTimer() {
-  // Timer start logic will be implemented later.
+  if (state.isRunning || state.timerId !== null) {
+    return;
+  }
+
+  state.isRunning = true;
+  state.timerId = window.setInterval(timerTick, 1000);
 }
 
 function pauseTimer() {
@@ -77,7 +82,19 @@ function resetTimer() {
 }
 
 function timerTick() {
-  // Timer tick logic will be implemented later.
+  if (state.secondsRemaining <= 0) {
+    return;
+  }
+
+  state.secondsRemaining -= 1;
+  updateDisplay(state.secondsRemaining);
+
+  if (state.secondsRemaining === 0) {
+    window.clearInterval(state.timerId);
+    state.timerId = null;
+    state.isRunning = false;
+    console.log('work complete');
+  }
 }
 
 function updateDisplay(secondsRemaining) {
